@@ -6,17 +6,18 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            Registration user = new Registration(5);
-            user.UserRegistration("Игорь", "1234567");
-            user.UserRegistration("Никита2017", "18052017");
+            Registration<string, int> user = new Registration<string, int>(5);
+            user.UserRegistration("Игорь", 123456);
+            user.UserRegistration("Никита2017", 18052017);
 
             for (int i = 0; i < user.Length(); i++)
             {
-                DataBase database = user.Get((uint)i);
+                DataBase<string, int> database = user.Get((uint)i);
                 Console.WriteLine("Username: " + database.Username + ", Password: " + database.Password);
             }
         }
     }
+
     public class ArrayG<T>
     {
         private int size;
@@ -25,7 +26,7 @@ namespace ConsoleApp
         public ArrayG(uint size)
         {
             array = new T[size];
-            size = 0;
+            this.size = 0;
         }
         public void Add(T item)
         {
@@ -39,7 +40,7 @@ namespace ConsoleApp
         }
         public void Remove(uint index)
         {
-            if (index <= size)
+            if (index < size)
             {
                 array[index] = default(T);
             }
@@ -48,7 +49,7 @@ namespace ConsoleApp
         }
         public T Get(uint index)
         {
-            if (index <= size)
+            if (index < size)
                 return array[index];
             else
                 return default(T);
@@ -63,24 +64,25 @@ namespace ConsoleApp
             return size;
         }
     }
-    public class DataBase
+
+    public class DataBase<TUsername, TPassword>
     {
-        public string Username { get; private set; }
-        public string Password { get; private set; }
-        public DataBase(string username, string password)
+        public TUsername Username { get; private set; }
+        public TPassword Password { get; private set; }
+        public DataBase(TUsername username, TPassword password)
         {
             Username = username;
             Password = password;
         }
     }
-    public class Registration : ArrayG<DataBase>
+    public class Registration<TUsername, TPassword> : ArrayG<DataBase<TUsername, TPassword>>
     {
         public Registration(uint size) : base(size)
         {
         }
-        public void UserRegistration(string username, string password)
+        public void UserRegistration(TUsername username, TPassword password)
         {
-            DataBase user = new DataBase(username, password);
+            DataBase<TUsername, TPassword> user = new DataBase<TUsername, TPassword>(username, password);
             Add(user);
         }
     }
